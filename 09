@@ -1,0 +1,163 @@
+//含头指针的单链表，查找其链表中倒数第K个位置上的结点
+typedef int ElemType;             //链表数据的结构定义
+typedef struct LNode{             //链表结点的结构定义
+	ElemType data;                //结点数据
+	struct Lnode *link;           //结点链接指针
+}*LinkList;
+int Search_k(LinkList list ,int k){
+	Linklist p = list->link , q = list->link; //指针p、q指向第一个结点
+	int count = 0;
+	while(p!= NULL){              //遍历链表直到最后一个结点
+		if(count < k){
+			count ++;
+			p = p->link;
+		}
+		else{
+			p = p->link;
+			q = q->link;
+		}
+	}
+	if (count < k){               //结点数不足K
+		return 0;
+	}
+	else{
+		cout<<q->data;
+		return 1;
+	}
+}
+
+
+//含n个整数的一维数组R，将R中保存的序列循环左移p个位置，即将R( a0,a1,....,a(n-1) )变换为R( ap,a(p+1),....a(n-1),a0,a1,....,a(p-1) )
+//思路同：将字符串分开的两个子串相互倒转
+void Reverse(int R[],int from,int to){
+	int i,temp;
+	for(int i = 0; i<(to-from+1)/2;i++){
+		temp = R[from+i];
+		R[from+i] = R[to-i];
+		R[to-i] = temp;
+	}
+}
+void Converse(int R[],int n,int p){
+	Reverse(R,0,p-1);
+	Reverse(R,p,n-1);
+	Reverse(R,0,n-1);
+}
+
+
+//对于长度为L的升序序列S，处在第L/2个位置的数成为S的中位数，求两个等长升序序列A、B的中位数
+//思路：1、先分别求出A、B的中位数a、b
+//		2、若a=b则a或b为所求
+//		3、若a<b,则舍弃A中较小的一半和B中较大一半(舍弃长度相等)
+//		4、若a>b,则舍弃A中较大一半和B中较小一半(舍弃长度相等)
+//		5、重复1234步，直到最后都只剩一个元素，较小者为所求
+int M_Search(int A[],int B[],int n){
+	int s1=0,d1=n-1,m1,s2=1,d2=n-1,m2;		//分别表示序列A和B的首位数、末位数、中位数
+	while(s1 != d1 || s2 != d2 ){
+		m1 = (s1+d1)/2;
+		m2 = (s2+d2)/2;
+		if(A[m1]==B[m2]){
+			return A[m1];					//满足条件a=b
+		}
+		if(A[m1]<B[m2]){					//a<b
+			if((s1+d1)%2==0){
+				s1=m1;
+				d2=m2;
+			}
+			else{
+				s1=m1+1;
+				d2=m2;
+			}
+		}
+		else{
+			if((s1+d1)%2==0){
+				d1=m1;
+				s2=m2;
+			}
+			else{
+				d1=m1;
+				s2=m2+1;
+		}
+	}
+	return A[s1]<B[S2]? A[s1]:[s2];
+}
+
+
+//用带头结点的单链表保存单词，当两个单词有相同的后缀时，可共享相同的后缀存储空间，例如“loading”和“being”
+//设str1和str2分别指向两个单词所在的单链表的头结点，找出两个链表共同后缀的起始位置
+//思路：找到共同后缀的第一个结点
+//	1、分别求出str1和str2所指两个链表的长度m、n
+//	2、两个链表以表尾对齐：另指针p、q分别指向str1和str2的头结点，若m>=n，则使p指向链表中的第m-n+1个结点；反之则使q指向其第m-n+1个结点
+//	3、反复将p和q同步向后移动，并判断它们是否指向同一结点。
+typedef char ElemType;
+typedef struct LNode
+{
+	ElemType data;
+	struct Lnode *link
+}LinkList;
+LinkNode *Find_1st_common(LinkList str1,LinkList str2){
+	int len1=length(str1),len2=length(str2);
+	LinkNode *p,*q;
+	for(p=str1;len1>len2;len1--){
+		p=p->next;
+	}
+	for(q=str2;len1<len2;len2--){
+		q=q->next;
+	}
+	while(p->next!=NULL&&p->next!=q->next){
+		p=p->next;
+		q=q->next;
+	}
+	return p->next;
+}
+
+
+//整数序列A(a0,a1,...,a(n-1) ),其中0<a<n  若存在值相等的元素x且个数m>n/2，则称x为A的主元素，设计算法求A的主元素
+//思路：从前往后扫描数组元素，标记出一个可能成为主元素的元素Num，然后重新计数，确认Num是否是主元素
+//	1、选取候选的主元素：依次扫描所给数组中的每个证书，将第一个遇到的证整数Num保存到c中，记录Num的出现次数为1；
+//		若遇到的下一个整数仍等于Num，则计数+1，否则计数减1；
+//		当计数减到0时，将遇到的下一个整数保存到c中，计数重新记为1，开始新一轮计数，即从当前位置开始重复上述，扫完全部元素
+//	2、判断c中元素是否是真正的主元素：再次扫描该数组，统计c中元素出现的次数，若大于n/2，则为主元素
+int Majority(int A[],int n){
+	int i,c,count=1;
+	c = A[0];
+	for(i=1;i<n;i++){
+		if(A[i] ==c){
+			count++;
+		}
+		else if(count>0){
+			count--;
+		}
+		else{
+			c = A[i];
+			count = 1;
+		}
+	}
+	if(count>0){
+		for(i=count=0;i<n;i++){
+			if(A[i] == c){
+				count++;
+			}
+		}	
+		if(count>=n/2){
+			return c;
+		}
+		else{
+			return -1;
+		}
+	}
+}
+
+//二叉树的带权路径长度(WPL)是二叉树中所有叶结点的带权路径长度之和。
+//给定一棵二叉树，采用二叉链表存储，其中叶结点weight域保存该结点的非负权值，left指向其左孩子，right指向其右孩子
+//设root为指向T的根结点，设计求T的WPL的算法
+/*思路：
+	方法1(先序遍历递归算法)：用static变量记录WPL
+		1、若该结点是叶子结点，那么变量wpl加上该结点的深度与权值之积
+		2、若该结点非叶子结点，那么若左子树不空，对左子树调用递归算法，若右子树不空，对右子树调用递归算法，深度参数均为本结点深度参数+1
+		3、最后返回计算出的wpl即可
+		
+	方法2(基于层次遍历的队列)：
+		1、用队列进行层次遍历，记录当前的层数，当遍历到叶子结点时，累计wpl；
+		2、当遍历到非叶子结点时把该结点的子树加入队列；
+		3、当某结点为该层的最后一个结点时，层数自增1；
+		4、队列空时遍历结束，返回wpl
