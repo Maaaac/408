@@ -1,4 +1,4 @@
-//含头指针的单链表，查找其链表中倒数第K个位置上的结点
+//2009、含头指针的单链表，查找其链表中倒数第K个位置上的结点
 typedef int ElemType;             //链表数据的结构定义
 typedef struct LNode{             //链表结点的结构定义
 	ElemType data;                //结点数据
@@ -27,7 +27,7 @@ int Search_k(LinkList list ,int k){
 }
 
 
-//含n个整数的一维数组R，将R中保存的序列循环左移p个位置，即将R( a0,a1,....,a(n-1) )变换为R( ap,a(p+1),....a(n-1),a0,a1,....,a(p-1) )
+//2010、含n个整数的一维数组R，将R中保存的序列循环左移p个位置，即将R( a0,a1,....,a(n-1) )变换为R( ap,a(p+1),....a(n-1),a0,a1,....,a(p-1) )
 //思路同：将字符串分开的两个子串相互倒转
 void Reverse(int R[],int from,int to){
 	int i,temp;
@@ -44,7 +44,7 @@ void Converse(int R[],int n,int p){
 }
 
 
-//对于长度为L的升序序列S，处在第L/2个位置的数成为S的中位数，求两个等长升序序列A、B的中位数
+//2011、对于长度为L的升序序列S，处在第L/2个位置的数成为S的中位数，求两个等长升序序列A、B的中位数
 /*思路：1、先分别求出A、B的中位数a、b
 		2、若a=b则a或b为所求
 		3、若a<b,则舍弃A中较小的一半和B中较大一半(舍弃长度相等)
@@ -82,7 +82,7 @@ int M_Search(int A[],int B[],int n){
 	return A[s1]<B[S2]? A[s1]:[s2];
 }
 
-/*
+/*2012
 	用带头结点的单链表保存单词，当两个单词有相同的后缀时，可共享相同的后缀存储空间，例如“loading”和“being”
 	设str1和str2分别指向两个单词所在的单链表的头结点，找出两个链表共同后缀的起始位置
 */
@@ -114,7 +114,7 @@ LinkNode *Find_1st_common(LinkList str1,LinkList str2){
 }
 
 
-//整数序列A(a0,a1,...,a(n-1) ),其中0<a<n  若存在值相等的元素x且个数m>n/2，则称x为A的主元素，设计算法求A的主元素
+//2013、整数序列A(a0,a1,...,a(n-1) ),其中0<a<n  若存在值相等的元素x且个数m>n/2，则称x为A的主元素，设计算法求A的主元素
 /*思路：从前往后扫描数组元素，标记出一个可能成为主元素的元素Num，然后重新计数，确认Num是否是主元素
 	1、选取候选的主元素：依次扫描所给数组中的每个证书，将第一个遇到的证整数Num保存到c中，记录Num的出现次数为1；
 		若遇到的下一个整数仍等于Num，则计数+1，否则计数减1；
@@ -151,7 +151,7 @@ int Majority(int A[],int n){
 	}
 }
 
-/*
+/*2014
 	二叉树的带权路径长度(WPL)是二叉树中所有叶结点的带权路径长度之和。
 	给定一棵二叉树，采用二叉链表存储，其中叶结点weight域保存该结点的非负权值，left指向其左孩子，right指向其右孩子
 	设root为指向T的根结点，设计求T的WPL的算法
@@ -184,8 +184,8 @@ int wpl_PreOrder(BiTree root,int deep){
 		return wpl;
 }
 
-	
-/*	方法2(基于层次遍历的队列)：
+/*	
+	方法2(基于层次遍历的队列)：
 		1、用队列进行层次遍历，记录当前的层数，当遍历到叶子结点时，累计wpl；
 		2、当遍历到非叶子结点时把该结点的子树加入队列；
 		3、当某结点为该层的最后一个结点时，层数自增1；
@@ -197,5 +197,169 @@ int wpl_LevelOrder(BiTree root){
 	int end1,end2;								//队列最多容纳MaxSize-1个元素
 	end1 = end2 =0 ;							//头指针指向队头元素，尾指针指向队尾的后一个元素
 	int wpl = 0,deep =0;						//初始化wpl和深度
-	BiTree
+	BiTree lastNode;							//lastNode用来记录当前层的最后一个结点
+	BiTree newlastNode;							//newlastNode用来记录下一层的最后一个结点
+	lastNode = root;							//lastNode初始化为根结点
+	newlastNode = NULL;							//newlastNode初始化为空
+	q[end2++] = root;							//根结点入队
+	while(end1 != end2){						//层次遍历，若队列不空则循环
+		BiTree t = q[end1++];					//拿出队列中的头一个元素
+		if(t->lchild == NULL && t->rchild == NULL){		
+			wpl += deep*t->weight;				//若为叶子结点，统计wpl
+		}
+		if(root->lchild != NULL){				//若非叶子结点把左结点入队
+			q[end2++] = t->lchild;				
+			newlastNode = t->lchild;
+		}
+		if(root->rchild != NULL){
+			q[end2++] = t->rchild;
+			newlastNode = t->rchild;
+		}
+		if(t == lastNode){
+			lastNode = newlastNode;
+			deep += 1;
+		}
+	}
+	return wpl
 }
+
+
+
+/*2015
+	用单链表保存m个整数，结点的结构为[data][link]，且[data]<=n
+	设计一个时间复杂度尽可能高效的算法，对于链表中data的绝对值相等的结点，仅保留第一次出现的结点而删除其余绝对值相等的结点
+	如链表：21 -> -15 -> -15 -> -7 -> 15,删除结点后为：21 -> -15 -> -7
+*/
+/*
+	思路：因|data|<=n,故辅助数组q的大小为n+1，各元素的初值均为0.
+	依次扫描链表中各结点，同时检查q[|data|]的值，若为0，则保留结点并令q[|data|]=1，否则将该结点删除
+*/
+//单链表结点的数据类型定义
+typedef struct  node{
+	int data;
+	struct node *link;
+}NODE;
+typedef NODE *PNODE
+//算法实现
+void func(PNODE h,int n){
+	PNODE p = h , r;
+	int *q,m;
+	q = (int *)malloc(sizeof(int)*(n+1));			//申请n+1个位置的辅助空间
+	for(int i=0;i<n+1;i++){
+		*(q+i) = 0;
+	}
+	while(p->link != NULL){
+		m = p->link->data >0 ? p->link->data:-p->link->data;
+		if(*(q+m) == 0){							//判断该结点的data是否已出现过
+			*(q+m) =1;
+			p = p->link;
+		}
+		else{
+			r = p->link;
+			p->link = r->link;
+			free(r);
+		}
+	}
+	free(q);
+}
+
+/*2016
+	已知由n(n>=2)个正整数构成的集合A，将其划分为两个不相交的子集A1和A2，元素个数分别为n1和n2
+	令A1和A2中元素之和为S1和S2，设计划分算法，满足|n1-n2|最小且|S1-S2|最大
+*/
+/*思路：
+	将最小的n/2(向下取整，下同)个元素放在A1中，其余的元素放在A2中，分组结果即可满足题意
+	利用快速排序的思想，基于枢轴将n个整数划分为两个子集，根据划分后枢轴所处的位置i分别处理
+	1、若i=n/2,则分组完成，算法结束
+	2、若i<n/2,则枢轴及之前的所有元素均属于A1，继续对i之后的元素进行划分
+	3、若i>n/2,则枢轴及之后的所有元素均属于A2，继续对i之前的元素进行划分
+*/
+int setPartition(int a[],int n[]){
+	int pivotkey,low=0,low0=0,high=n-1,flag=1,k=n/2,i;
+	int s1=0,s2=0;
+	while(flag){
+		pivotkey=a[low];
+		while(low<high && a[high]>=pivotkey){
+			--high;
+		}
+		if(low != high){
+			a[low]=a[high];
+		}
+		while(low<high && a[low]<=pivotkey){
+			++low;
+		}
+		if(low != high){
+			a[high]=a[low];
+		}
+		a[low] = pivotkey;
+		if(low == k-1){
+			flag = 0;
+		}
+		else{
+			if(low < k-1){
+				low0 = ++low;
+				high = high0;
+			}
+			else{
+				high0 = --high;
+				low = low0;
+			}
+		}
+	}
+	for(i=o;i<k;i++){
+		s1+=a[i];
+	}
+	for(i=k;i<n;i++){
+		s2+=a[i];
+	}
+	return s2-s1;
+}
+
+
+/*2017
+	设计算法，将给定的表达式树(二叉树)转换为等价的中缀表达式(通过括号反映操作符的计算次序)并输出
+	如下列两棵表达树作为算法的输入时，输出的等价中缀表达式分别为(a+b)*(c*(-d))和(a*b)+(-(c-d))
+	          *						  +
+	       /     \	       			/   \
+	      +       *	      		   *     -
+	    /   \   /   \	    	 /   \     \
+	   a     b c     -	   		a     b     -
+	                  \					   / \
+	                   d 				  c   d
+*/
+/*思路：
+	表达树的中序序列加上必要的括号即为等价的中缀表达式
+	基于二叉树的中序遍历策略
+*/
+//二叉树结点定义：
+typedef struct node{
+	char data[10];				//存储操作数或操作符
+	struct node *left,*right;
+}BTree;
+//算法
+void BtreeToE(BTree *root){
+	BtreeToExp(root,1);			//根的高度为1
+}
+void BtreeToExp(BTree *root,int deep){
+	if(root == NULL){return;}
+	else if(root->left == NULL && root->right == NULL){
+		printf("%s",root->data );
+	}
+	else{
+		if(deep>1){
+			printf("(");		//若有子表达式则加一层括号
+		}
+		BtreeToExp(root->left,deep+1);
+		printf("%s",root->data );
+		BtreeToExp(root->right,deep+1);
+		if(deep>1){
+			printf(")");		//若由子表达式则加一层括号（此处是为了封闭次结点层的运算）
+		}
+	}
+	
+}
+
+/*2018
+	给定一个含n个整数的数组，设计一个时间上尽可能高效的算法，找出数组中未出现的最小正整数
+	
+*/
